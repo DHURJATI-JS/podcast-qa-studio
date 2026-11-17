@@ -1,0 +1,53 @@
+# Isolated test stack: its own throwaway database (podcastqa_test, in RAM) and Redis.
+# It never touches the real "podcastqa" database or volumes.
+#   docker compose -f docker-compose.test.yml run --rm --build tests
+name: podcastqa-test
+
+services:
+  db:
+    image: pgvector/pgvector:0.8.1-pg17
+    environment:
+      POSTGRES_USER: podcastqa
+      POSTGRES_PASSWORD: test-only-password
+      POSTGRES_DB: podcastqa_test
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U podcastqa -d podcastqa_test"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  redis:
+    image: redis:7.4.6-alpine
+    tmpfs:
+      - /data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  tests:
+    build:
+      context: .
+      target: test
+    environment:
+      APP_ENV: test
+      SECRET_KEY: test-secret-key-0123456789abcdef0123456789abcdef
+      DATABASE_URL: postgresql+asyncpg://podcastqa:test-only-password@db:5432/podcastqa_test
+      REDIS_URL: redis://redis:6379/15
+      BASE_URL: http://testserver
+      ALLOWED_HOSTS: testserver,localhost
+      GATEWAY_ENABLED: "false"
+      LOCAL_LLM_ENABLED: "false"
+      TTS_ENABLED: "false"
+      EMBEDDING_ORDER: hash
+      ARGON2_TIME_COST: "1"
+      ARGON2_MEMORY_KIB: "8192"
+      PDF_WORKERS: "1"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy

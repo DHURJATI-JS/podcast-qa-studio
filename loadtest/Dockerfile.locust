@@ -1,0 +1,4 @@
+FROM locustio/locust:2.47.0
+RUN pip install --no-cache-dir websocket-client==1.9.2
+COPY loadtest/locustfile.py /home/locust/locustfile.py
+WORKDIR /home/locust

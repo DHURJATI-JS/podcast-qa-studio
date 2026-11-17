@@ -1,0 +1,349 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon, icon_tile %}
+{% block title %}{{ app_name }} - AI podcast interview prep{% endblock %}
+{% block content %}
+
+{# ============================================================== HERO #}
+<section class="relative isolate overflow-hidden">
+  <div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
+    <div class="absolute -top-48 left-1/2 h-[40rem] w-[40rem] -translate-x-1/2 rounded-full bg-gradient-to-br from-violet-300/50 via-fuchsia-200/40 to-transparent blur-3xl dark:from-violet-700/30 dark:via-fuchsia-800/20"></div>
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(124,58,237,0.13)_1px,transparent_0)] [background-size:22px_22px] [mask-image:linear-gradient(to_bottom,black,transparent_85%)]"></div>
+  </div>
+
+  <div class="mx-auto grid max-w-7xl items-center gap-14 px-4 pt-14 pb-20 lg:grid-cols-[1.05fr_1fr] lg:pt-20">
+    <div>
+      <a href="#features" class="inline-flex items-center gap-2 rounded-full bg-white/80 py-1 pr-3 pl-1 text-xs font-medium text-violet-800 shadow-sm ring-1 ring-violet-200 backdrop-blur transition hover:ring-violet-400 dark:bg-zinc-900/70 dark:text-violet-200 dark:ring-violet-800">
+        <span class="rounded-full bg-violet-600 px-2 py-0.5 text-[11px] font-semibold text-white">New</span>
+        Voice co-host &middot; local AI &middot; one login per account
+        {{ icon("arrow", "h-3.5 w-3.5") }}
+      </a>
+      <h1 class="mt-6 text-4xl font-bold tracking-tight text-balance sm:text-6xl">
+        Plan sharper interviews.
+        <span class="block bg-gradient-to-r from-violet-600 via-fuchsia-600 to-pink-600 bg-clip-text text-transparent">Nail your guest spot.</span>
+      </h1>
+      <p class="mt-6 max-w-xl text-lg leading-relaxed text-zinc-600 dark:text-zinc-300">
+        {{ app_name }} writes, checks and times your podcast questions &mdash; or interviews you, scores your answers and shows you a
+        stronger version. Mira, your AI co-host, reads it all aloud in a soft, natural voice.
+      </p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        {% if user %}
+          <a href="/podcasts/new?mode=host" class="btn btn-primary px-5 py-3 text-base">{{ icon("list", "h-5 w-5") }} Create questions</a>
+          <a href="/podcasts/new?mode=guest" class="btn btn-secondary px-5 py-3 text-base">{{ icon("mic", "h-5 w-5") }} Prepare as a guest</a>
+        {% else %}
+          <a href="/signup" class="btn btn-primary px-5 py-3 text-base">{{ icon("sparkles", "h-5 w-5") }} Create a free account</a>
+          <a href="/login" class="btn btn-secondary px-5 py-3 text-base">Sign in</a>
+        {% endif %}
+      </div>
+      <ul class="mt-10 grid max-w-xl grid-cols-2 gap-x-6 gap-y-3 text-sm text-zinc-600 sm:grid-cols-4 dark:text-zinc-300">
+        <li class="flex items-center gap-2">{{ icon("chip", "h-5 w-5 text-violet-600 dark:text-violet-400") }} LAN-first AI</li>
+        <li class="flex items-center gap-2">{{ icon("speaker", "h-5 w-5 text-pink-600 dark:text-pink-400") }} Kokoro voice</li>
+        <li class="flex items-center gap-2">{{ icon("shield", "h-5 w-5 text-emerald-600 dark:text-emerald-400") }} Leak-tested</li>
+        <li class="flex items-center gap-2">{{ icon("beaker", "h-5 w-5 text-amber-600 dark:text-amber-400") }} Load-tested</li>
+      </ul>
+      <p class="mt-6 flex items-start gap-2 text-xs text-zinc-500 dark:text-zinc-400">{{ icon("alert", "mt-0.5 h-4 w-4 shrink-0") }}<span>AI suggestions can be wrong &mdash; always review them. <a class="link" href="#disclaimer">Read the disclaimer</a>.</span></p>
+    </div>
+
+    {# ---- illustrated product mock-up ---- #}
+    <div class="relative mx-auto w-full max-w-xl" aria-hidden="true">
+      <div class="absolute -top-8 -left-8 h-40 w-40 rounded-full bg-violet-400/30 blur-3xl"></div>
+      <div class="absolute -right-6 -bottom-10 h-48 w-48 rounded-full bg-pink-400/30 blur-3xl"></div>
+      <div class="relative overflow-hidden rounded-3xl border border-zinc-200 bg-white/90 shadow-2xl shadow-violet-900/10 backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/90">
+        <div class="flex items-center gap-1.5 border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
+          <span class="h-2.5 w-2.5 rounded-full bg-rose-400"></span><span class="h-2.5 w-2.5 rounded-full bg-amber-400"></span><span class="h-2.5 w-2.5 rounded-full bg-emerald-400"></span>
+          <span class="ml-3 flex-1 truncate rounded-md bg-zinc-100 px-3 py-1 text-[11px] text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400">localhost:8080/podcasts/climate-founders</span>
+        </div>
+        <div class="grid gap-4 p-5 sm:grid-cols-[1fr_8.5rem]">
+          <div class="min-w-0 space-y-3">
+            <div>
+              <div class="flex items-center justify-between text-[11px] text-zinc-500 dark:text-zinc-400"><span class="font-semibold text-zinc-700 dark:text-zinc-200">Run time</span><span>24:30 of 30:00</span></div>
+              <div class="mt-1.5 flex h-2 overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-800"><div class="w-[8%] bg-sky-400"></div><div class="w-[66%] bg-violet-500"></div><div class="w-[8%] bg-indigo-400"></div></div>
+            </div>
+            <div class="rounded-xl border border-violet-200 bg-violet-50/70 p-3 dark:border-violet-900 dark:bg-violet-950/40">
+              <div class="flex items-center gap-2 text-[11px] font-medium text-violet-800 dark:text-violet-200"><span class="h-2 w-2 animate-pulse rounded-full bg-violet-500"></span> Mira is writing questions&hellip;</div>
+              <p class="caret mt-1.5 font-mono text-[11px] leading-snug text-zinc-600 dark:text-zinc-300">4. [story|180] Tell us about the night the first cold room failed</p>
+            </div>
+            <ul class="space-y-2 text-[12px]">
+              <li class="rounded-xl border border-zinc-200 p-2.5 dark:border-zinc-800">
+                <div class="flex items-center gap-1.5"><span class="badge bg-sky-100 py-0 text-[10px] text-sky-800 dark:bg-sky-500/15 dark:text-sky-200">Opener</span><span class="text-[10px] text-zinc-500">1:30</span></div>
+                <p class="mt-1 font-medium">What first pulled you toward climate tech?</p>
+              </li>
+              <li class="rounded-xl border border-amber-300 bg-amber-50/70 p-2.5 dark:border-amber-800 dark:bg-amber-950/30">
+                <div class="flex items-center gap-1.5"><span class="badge bg-violet-100 py-0 text-[10px] text-violet-800 dark:bg-violet-500/15 dark:text-violet-200">Core</span><span class="badge bg-amber-100 py-0 text-[10px] text-amber-800 dark:bg-amber-500/15 dark:text-amber-200">{{ icon("copy", "h-3 w-3") }} Repeat</span><span class="text-[10px] text-zinc-500">2:00</span></div>
+                <p class="mt-1 font-medium">Why did you get into climate technology?</p>
+                <p class="mt-1 text-[10px] text-amber-800 dark:text-amber-200">Repeats Q1 &middot; same meaning, 92%</p>
+              </li>
+              <li class="rounded-xl border border-zinc-200 p-2.5 dark:border-zinc-800">
+                <div class="flex items-center gap-1.5"><span class="badge bg-rose-100 py-0 text-[10px] text-rose-800 dark:bg-rose-500/15 dark:text-rose-200">Challenge</span><span class="text-[10px] text-zinc-500">2:30</span></div>
+                <p class="mt-1 font-medium">Do you think investors get it?</p>
+                <p class="mt-1 flex items-center gap-1 text-[10px] text-zinc-500">{{ icon("sparkles", "h-3 w-3 text-violet-500") }} Yes/no question &mdash; try &ldquo;How do investors&hellip;&rdquo;</p>
+              </li>
+            </ul>
+          </div>
+          <div class="flex flex-col items-center rounded-2xl bg-gradient-to-b from-violet-50 to-pink-50 p-3 text-center dark:from-violet-950/50 dark:to-pink-950/30">
+            <div class="h-24 w-24">{% include "_mira.html" %}</div>
+            <p class="mt-1 text-xs font-semibold">Mira</p>
+            <div class="mt-2 flex h-8 items-end gap-[3px]">
+              <span class="eq-bar h-3 w-1 rounded-full bg-violet-500"></span><span class="eq-bar h-6 w-1 rounded-full bg-violet-500"></span><span class="eq-bar h-8 w-1 rounded-full bg-fuchsia-500"></span><span class="eq-bar h-5 w-1 rounded-full bg-fuchsia-500"></span><span class="eq-bar h-7 w-1 rounded-full bg-pink-500"></span><span class="eq-bar h-4 w-1 rounded-full bg-pink-500"></span><span class="eq-bar h-6 w-1 rounded-full bg-violet-500"></span>
+            </div>
+            <p class="mt-2 text-[10px] text-zinc-500 dark:text-zinc-400">Speaking &middot; soft &amp; warm</p>
+            <div class="mt-auto w-full space-y-1 pt-4 text-left">
+              <p class="text-[10px] font-semibold tracking-wide text-zinc-500 uppercase dark:text-zinc-400">Remembers</p>
+              <p class="flex items-center gap-1 rounded-md bg-white/80 px-2 py-1 text-[10px] dark:bg-zinc-800/80">{{ icon("bookmark", "h-3 w-3 shrink-0 text-violet-500") }} Avoid politics</p>
+              <p class="flex items-center gap-1 rounded-md bg-white/80 px-2 py-1 text-[10px] dark:bg-zinc-800/80">{{ icon("bookmark", "h-3 w-3 shrink-0 text-violet-500") }} Ask about failure</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="float-slow absolute -bottom-10 -left-3 hidden items-center gap-3 rounded-2xl border border-zinc-200 bg-white px-4 py-3 shadow-xl sm:flex lg:-left-8 dark:border-zinc-800 dark:bg-zinc-900">
+        <span class="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500 text-sm font-bold text-white">8<span class="text-[9px] font-medium">/10</span></span>
+        <div class="text-left"><p class="text-xs font-semibold">Answer feedback</p><p class="text-[11px] text-zinc-500 dark:text-zinc-400">+ a stronger version</p></div>
+      </div>
+      <div class="float-slower absolute -top-5 right-4 hidden items-center gap-2 rounded-2xl border border-zinc-200 bg-white px-3 py-2 shadow-xl sm:flex dark:border-zinc-800 dark:bg-zinc-900">
+        {{ icon_tile("file", "pink", "h-8 w-8") }}<p class="text-xs font-semibold">Run-sheet PDF</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+{# ============================================================== STATS #}
+<section class="border-y border-zinc-200 bg-white/60 dark:border-zinc-800 dark:bg-zinc-900/40" aria-label="Highlights">
+  <div class="mx-auto grid max-w-7xl grid-cols-2 gap-6 px-4 py-8 lg:grid-cols-4">
+    {% for icon_name, tone, title, body in [
+      ("list", "violet", "Timed question plans", "Every question has a slot; the episode has a budget."),
+      ("chip", "sky", "4 AI providers", "Gateway, local Gemma, Claude, ChatGPT - automatic fallback."),
+      ("key", "emerald", "One login per account", "Signed out elsewhere? You're told exactly why."),
+      ("wave", "pink", "Voice + lip-sync", "Mira speaks in a soft Kokoro voice."),
+    ] %}
+      <div class="flex items-start gap-3">
+        {{ icon_tile(icon_name, tone) }}
+        <div><p class="font-semibold">{{ title }}</p><p class="mt-0.5 text-sm text-zinc-600 dark:text-zinc-400">{{ body }}</p></div>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+{# ============================================================== MODES #}
+<section class="mx-auto max-w-7xl px-4 py-20" aria-labelledby="modes-title">
+  <p class="section-title text-center">Two ways to use it</p>
+  <h2 id="modes-title" class="mt-2 text-center text-3xl font-bold tracking-tight sm:text-4xl">Host or guest &mdash; Mira has you covered</h2>
+  <div class="mt-12 grid gap-8 md:grid-cols-2">
+    <article class="card overflow-hidden">
+      <div class="relative h-44 bg-gradient-to-br from-violet-100 via-violet-50 to-white dark:from-violet-950/60 dark:via-zinc-900 dark:to-zinc-900" aria-hidden="true">
+        <svg viewBox="0 0 320 176" class="absolute inset-0 h-full w-full">
+          <rect x="70" y="26" width="180" height="128" rx="16" class="fill-white dark:fill-zinc-800" />
+          <rect x="70" y="26" width="180" height="128" rx="16" fill="none" class="stroke-violet-200 dark:stroke-violet-800" stroke-width="2" />
+          <circle cx="94" cy="56" r="7" class="fill-sky-400" /><rect x="110" y="51" width="110" height="10" rx="5" class="fill-zinc-200 dark:fill-zinc-700" />
+          <circle cx="94" cy="88" r="7" class="fill-violet-500" /><rect x="110" y="83" width="90" height="10" rx="5" class="fill-zinc-200 dark:fill-zinc-700" />
+          <circle cx="94" cy="120" r="7" class="fill-pink-500" /><rect x="110" y="115" width="100" height="10" rx="5" class="fill-zinc-200 dark:fill-zinc-700" />
+          <path d="M262 30l5 13 13 5-13 5-5 13-5-13-13-5 13-5z" class="fill-amber-400" />
+          <path d="M44 120l3 8 8 3-8 3-3 8-3-8-8-3 8-3z" class="fill-violet-400" />
+          <circle cx="268" cy="128" r="20" class="fill-violet-600" /><path d="M268 118v10l7 4" stroke="white" stroke-width="3" stroke-linecap="round" fill="none" />
+        </svg>
+      </div>
+      <div class="p-6">
+        <div class="flex items-center gap-3">{{ icon_tile("list", "violet") }}<h3 class="text-xl font-semibold">Create questions for a podcast</h3></div>
+        <p class="mt-3 text-sm text-zinc-600 dark:text-zinc-300">For hosts. Describe the theme, guest and audience; Mira drafts an ordered question flow that fits your episode length.</p>
+        <ul class="mt-5 space-y-2.5 text-sm">
+          {% for line in ["Questions streamed live as Mira writes them", "Change them your way - shorter, funnier, more personal - with undo", "Repeats, yes/no, double-barrelled and leading questions flagged", "A time slot per question and a live run-time budget"] %}
+            <li class="flex gap-2.5">{{ icon("check", "mt-0.5 h-4 w-4 shrink-0 text-violet-600 dark:text-violet-400") }}<span>{{ line }}</span></li>
+          {% endfor %}
+        </ul>
+        <a href="{{ '/podcasts/new?mode=host' if user else '/signup' }}" class="btn btn-secondary mt-6">Start a question plan {{ icon("arrow", "h-4 w-4") }}</a>
+      </div>
+    </article>
+    <article class="card overflow-hidden">
+      <div class="relative h-44 bg-gradient-to-br from-pink-100 via-pink-50 to-white dark:from-pink-950/50 dark:via-zinc-900 dark:to-zinc-900" aria-hidden="true">
+        <svg viewBox="0 0 320 176" class="absolute inset-0 h-full w-full">
+          <rect x="138" y="30" width="44" height="76" rx="22" class="fill-pink-500" />
+          <path d="M118 84a42 42 0 0 0 84 0" fill="none" class="stroke-pink-400" stroke-width="6" stroke-linecap="round" />
+          <path d="M160 126v22M138 150h44" class="stroke-pink-400" stroke-width="6" stroke-linecap="round" />
+          <path d="M96 60c-8 12-8 28 0 40M78 50c-14 18-14 42 0 60" fill="none" class="stroke-pink-300 dark:stroke-pink-700" stroke-width="4" stroke-linecap="round" />
+          <path d="M224 60c8 12 8 28 0 40M242 50c14 18 14 42 0 60" fill="none" class="stroke-pink-300 dark:stroke-pink-700" stroke-width="4" stroke-linecap="round" />
+          <rect x="226" y="18" width="78" height="40" rx="12" class="fill-white dark:fill-zinc-800" />
+          <text x="265" y="44" text-anchor="middle" font-size="16" font-weight="700" class="fill-emerald-600">8/10</text>
+          <rect x="16" y="118" width="86" height="34" rx="12" class="fill-white dark:fill-zinc-800" />
+          <rect x="28" y="128" width="54" height="6" rx="3" class="fill-zinc-300 dark:fill-zinc-600" /><rect x="28" y="139" width="38" height="6" rx="3" class="fill-zinc-200 dark:fill-zinc-700" />
+        </svg>
+      </div>
+      <div class="p-6">
+        <div class="flex items-center gap-3">{{ icon_tile("mic", "pink") }}<h3 class="text-xl font-semibold">Prepare for a podcast</h3></div>
+        <p class="mt-3 text-sm text-zinc-600 dark:text-zinc-300">For guests. Mira predicts the questions you'll be asked, interviews you out loud and coaches every answer.</p>
+        <ul class="mt-5 space-y-2.5 text-sm">
+          {% for line in ["Mock interview: Mira asks, you answer, Mira checks", "A score, what worked, specific fixes and a stronger version", "Speaking-time estimate, rehearsal stopwatch and timing feedback", "Follow-up questions a real host would ask next"] %}
+            <li class="flex gap-2.5">{{ icon("check", "mt-0.5 h-4 w-4 shrink-0 text-pink-600 dark:text-pink-400") }}<span>{{ line }}</span></li>
+          {% endfor %}
+        </ul>
+        <a href="{{ '/podcasts/new?mode=guest' if user else '/signup' }}" class="btn btn-secondary mt-6">Start guest prep {{ icon("arrow", "h-4 w-4") }}</a>
+      </div>
+    </article>
+  </div>
+</section>
+
+{# ============================================================== HOW IT WORKS #}
+<section class="bg-gradient-to-b from-transparent via-violet-50/70 to-transparent py-20 dark:via-violet-950/20" aria-labelledby="how-title">
+  <div class="mx-auto max-w-7xl px-4">
+    <p class="section-title text-center">How it works</p>
+    <h2 id="how-title" class="mt-2 text-center text-3xl font-bold tracking-tight sm:text-4xl">From blank page to studio-ready in four steps</h2>
+    <ol class="relative mt-14 grid gap-10 md:grid-cols-4">
+      <li class="pointer-events-none absolute top-7 right-[12%] left-[12%] hidden h-0.5 bg-gradient-to-r from-violet-300 via-fuchsia-300 to-pink-300 md:block dark:from-violet-800 dark:via-fuchsia-800 dark:to-pink-800" aria-hidden="true"></li>
+      {% for icon_name, title, body in [
+        ("pencil", "Describe the episode", "Theme, guest, audience, length - and anything Mira should always remember."),
+        ("sparkles", "Mira drafts & checks", "Questions stream in, repeats are skipped, weak ones get tips, each gets a slot."),
+        ("mic", "Rehearse out loud", "Mira asks in a soft voice; you answer and get a score and a stronger version."),
+        ("download", "Export the run-sheet", "A clean PDF with timings and coaching, stored safely in PostgreSQL."),
+      ] %}
+        <li class="relative text-center">
+          <span class="relative z-10 mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-violet-700 shadow-lg ring-1 ring-violet-200 dark:bg-zinc-900 dark:text-violet-300 dark:ring-violet-800">{{ icon(icon_name, "h-6 w-6") }}</span>
+          <p class="mt-4 text-xs font-semibold tracking-wider text-violet-600 uppercase dark:text-violet-400">Step {{ loop.index }}</p>
+          <h3 class="mt-1 font-semibold">{{ title }}</h3>
+          <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-300">{{ body }}</p>
+        </li>
+      {% endfor %}
+    </ol>
+  </div>
+</section>
+
+{# ============================================================== PROBLEMS #}
+<section id="problems" class="mx-auto max-w-7xl px-4 py-20" aria-labelledby="problems-title">
+  <p class="section-title text-center">Problems it solves</p>
+  <h2 id="problems-title" class="mt-2 text-center text-3xl font-bold tracking-tight sm:text-4xl">Each one handled by a real feature</h2>
+  <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+    {% for icon_name, tone, title, body in [
+      ("copy", "amber", "Redundant questions", "The same question twice - or already asked in an earlier episode. Caught by meaning (pgvector) and by wording; pairs too close to call get an AI double-check, and AI repeats are skipped."),
+      ("clock", "sky", "Running over or under time", "Slots per question and a live bar for intro + questions + outro; new AI questions are sized to the time left."),
+      ("target", "rose", "Weak question craft", "Yes/no, double-barrelled, leading, too-long and too-short questions are flagged with a fix."),
+      ("file", "violet", "The blank page", "A complete, ordered question flow from just a theme, guest and audience - streamed live."),
+      ("users", "pink", "Unprepared guests", "A mock interview with a score, specific fixes and a stronger rewrite that only uses your facts."),
+      ("timer", "teal", "Rambling answers", "Speaking-time estimates from your pace, a rehearsal stopwatch and timing feedback per slot."),
+      ("repeat", "indigo", "Telling the same story twice", "Mira notices when an answer repeats one you already gave and suggests a fresh angle."),
+      ("bookmark", "emerald", "Repeating your instructions", "Say “avoid politics” once - Mira applies it to every suggestion on that podcast."),
+      ("cloud_off", "sky", "AI outages", "Gateway, then local Gemma, then Claude, then ChatGPT. None available? You're told exactly why."),
+      ("cursor", "amber", "Accidental double clicks", "Every action runs once (idempotency keys), AI tasks lock per podcast, rate limits stop spam."),
+      ("key", "rose", "Shared or stolen sessions", "One login per account: signing in elsewhere signs this device out - and it's told why."),
+      ("shield", "emerald", "Unsafe content", "Text is cleaned on the way in and escaped on the way out, under a strict nonce-based CSP."),
+    ] %}
+      <div class="card group p-6 transition hover:-translate-y-0.5 hover:shadow-md">
+        {{ icon_tile(icon_name, tone) }}
+        <h3 class="mt-4 font-semibold">{{ title }}</h3>
+        <p class="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">{{ body }}</p>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+{# ============================================================== FEATURES #}
+<section id="features" class="border-y border-zinc-200 bg-white/60 py-20 dark:border-zinc-800 dark:bg-zinc-900/40" aria-labelledby="features-title">
+  <div class="mx-auto max-w-7xl px-4">
+    <p class="section-title text-center">Everything included</p>
+    <h2 id="features-title" class="mt-2 text-center text-3xl font-bold tracking-tight sm:text-4xl">Built for real episodes</h2>
+    <div class="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+      {% for icon_name, tone, title, items in [
+        ("sparkles", "violet", "AI co-host", ["Streamed question generation", "Rewrites on request, with undo", "Follow-up and surprise questions", "Remembers your standing instructions"]),
+        ("clock", "sky", "Run-time", ["Target length per episode", "Time slot per question", "Live run-time bar", "Speaking-time estimates"]),
+        ("speaker", "pink", "Voice", ["Kokoro TTS, soft female voice", "Lip-synced avatar", "Browser-voice fallback", "Read any question aloud"]),
+        ("badge", "amber", "Quality", ["Repeat detection with pgvector", "AI double-check for close calls", "Yes/no, leading, double flags", "“Asked before” across episodes"]),
+        ("bolt", "teal", "Real-time & parallel", ["Socket.IO streaming", "Redis Streams worker pool", "Parallel embeddings", "Process-pool PDF rendering"]),
+        ("lock", "emerald", "Accounts & security", ["Google-style sign-in + chooser", "One login per account", "CSP nonces, CSRF, Argon2id", "Rate limits, leak tests"]),
+        ("file", "rose", "Export", ["PDF run-sheet with timings", "Coaching notes per answer", "Stored in PostgreSQL", "Download any time"]),
+        ("rocket", "indigo", "Install & run", ["One click on Mac or Windows", "Everything in Docker", "Dark and light mode", "Works with local AI only"]),
+      ] %}
+        <div class="card p-6">
+          <div class="flex items-center gap-3">{{ icon_tile(icon_name, tone, "h-10 w-10") }}<h3 class="font-semibold">{{ title }}</h3></div>
+          <ul class="mt-4 space-y-2 text-sm text-zinc-600 dark:text-zinc-300">
+            {% for item in items %}<li class="flex gap-2">{{ icon("check", "mt-0.5 h-4 w-4 shrink-0 text-emerald-600 dark:text-emerald-400") }}<span>{{ item }}</span></li>{% endfor %}
+          </ul>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{# ============================================================== AI CHAIN #}
+<section class="mx-auto max-w-7xl px-4 py-20" aria-labelledby="ai-title">
+  <p class="section-title text-center">Where your text goes</p>
+  <h2 id="ai-title" class="mt-2 text-center text-3xl font-bold tracking-tight sm:text-4xl">LAN first, cloud only if you add a key</h2>
+  <p class="mx-auto mt-4 max-w-2xl text-center text-zinc-600 dark:text-zinc-300">Mira tries each AI in order. If one fails mid-answer, the next one takes over seamlessly. Cloud providers are used only when you configure their API keys.</p>
+  <ol class="mt-12 flex flex-col items-stretch gap-3 lg:flex-row lg:items-center">
+    {% set chain = [
+      ("server", "violet", "AI gateway", "Gemma on your LAN"),
+      ("chip", "sky", "Local Gemma", "Docker, works offline"),
+      ("cloud", "amber", "Claude API", "optional key"),
+      ("cloud", "emerald", "ChatGPT API", "optional key"),
+      ("alert", "rose", "None available?", "you're told why"),
+    ] %}
+    {% for icon_name, tone, title, body in chain %}
+      <li class="card flex flex-1 items-center gap-3 p-4">
+        {{ icon_tile(icon_name, tone) }}
+        <div><p class="font-semibold">{{ title }}</p><p class="text-xs text-zinc-500 dark:text-zinc-400">{{ body }}</p></div>
+      </li>
+      {% if not loop.last %}<li class="flex justify-center text-zinc-400" aria-hidden="true">{{ icon("arrow", "h-5 w-5 rotate-90 lg:rotate-0") }}</li>{% endif %}
+    {% endfor %}
+  </ol>
+</section>
+
+{# ============================================================== SECURITY #}
+<section class="mx-auto max-w-7xl px-4 pb-20" aria-labelledby="security-title">
+  <div class="overflow-hidden rounded-3xl bg-gradient-to-br from-zinc-900 via-violet-950 to-zinc-900 p-8 text-white shadow-xl sm:p-12">
+    <div class="grid gap-10 lg:grid-cols-[1fr_1.4fr]">
+      <div>
+        <span class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10">{{ icon("shield", "h-6 w-6") }}</span>
+        <h2 id="security-title" class="mt-4 text-3xl font-bold tracking-tight">Private by design, tested under load</h2>
+        <p class="mt-3 text-violet-100/80">Your podcasts never leave your machine unless you add a cloud key. Every account is isolated, and the isolation is tested route by route.</p>
+      </div>
+      <ul class="grid gap-4 sm:grid-cols-2">
+        {% for icon_name, title, body in [
+          ("lock", "Strict CSP with nonces", "No inline scripts, no eval - typed text can't run as code."),
+          ("key", "One login per account", "Key checked against the database on every request."),
+          ("eye_off", "Leak-hunted", "Every route probed with other accounts' ids."),
+          ("cursor", "Double-submit safe", "Idempotency keys, locks and rate limits."),
+          ("beaker", "Load-tested", "10-minute Locust runs up to 300 users."),
+          ("user", "Argon2id passwords", "Bounded hashing; generic, timing-safe errors."),
+        ] %}
+          <li class="flex gap-3 rounded-2xl bg-white/5 p-4 ring-1 ring-white/10">
+            <span class="text-violet-300">{{ icon(icon_name, "h-5 w-5") }}</span>
+            <div><p class="font-semibold">{{ title }}</p><p class="mt-0.5 text-sm text-violet-100/70">{{ body }}</p></div>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</section>
+
+{# ============================================================== DISCLAIMER #}
+<section id="disclaimer" class="mx-auto max-w-7xl px-4 pb-16" aria-labelledby="disclaimer-title">
+  <div class="alert alert-warn p-6 sm:p-8">
+    <div class="flex items-center gap-3">
+      {{ icon_tile("alert", "amber") }}
+      <h2 id="disclaimer-title" class="text-lg font-bold">Disclaimer and limitation of liability</h2>
+    </div>
+    <ul class="mt-4 list-disc space-y-1.5 pl-5">
+      <li>The software is provided <strong>&ldquo;as is&rdquo; and &ldquo;as available&rdquo;, without warranty of any kind</strong>, express or implied, including merchantability, fitness for a particular purpose and non-infringement.</li>
+      <li>AI-generated questions, scores, feedback, rewritten answers and voice output can be inaccurate, incomplete, biased or inappropriate. <strong>Review everything before you use it.</strong> Scores and time estimates are approximations, not guarantees.</li>
+      <li>Nothing in this app is <strong>legal, medical, financial, or other professional advice</strong>, and it is not a substitute for professional media training.</li>
+      <li>You are responsible for your content and how you use it: guest consent, privacy, copyright, defamation, platform rules and applicable law.</li>
+      <li>Mira's voice is synthetic. Do not use it to impersonate real people.</li>
+      <li>If you configure Claude or ChatGPT fallbacks, your text is sent to those providers and processed under their terms.</li>
+      <li>To the maximum extent permitted by law, the authors, contributors and operators <strong>accept no liability</strong> for any direct, indirect, incidental, special, consequential or exemplary damages, including loss of data, revenue, reputation or opportunity, arising from use of - or inability to use - this software.</li>
+      <li>Anyone who deploys this app for others is responsible for their own security, data protection and legal compliance, and should obtain legal review before production use. Test results describe our runs, not guarantees.</li>
+    </ul>
+    <p class="mt-4"><a href="/legal" class="link">Read the full disclaimer</a></p>
+  </div>
+</section>
+
+{# ============================================================== CTA #}
+<section class="mx-auto max-w-7xl px-4 pb-8">
+  <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-violet-600 via-fuchsia-600 to-pink-600 p-10 text-center text-white shadow-xl">
+    <div class="pointer-events-none absolute -top-16 -left-16 h-48 w-48 rounded-full bg-white/10 blur-2xl" aria-hidden="true"></div>
+    <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-white/15">{{ icon("mic", "h-6 w-6") }}</div>
+    <h2 class="mt-4 text-3xl font-bold tracking-tight">Your next episode starts here</h2>
+    <p class="mx-auto mt-2 max-w-xl text-white/85">Create a free account and let Mira draft your first question plan &mdash; or interview you for your next guest spot.</p>
+    <div class="mt-7 flex flex-wrap justify-center gap-3">
+      {% if user %}
+        <a href="/dashboard" class="btn bg-white px-5 py-3 text-base text-violet-700 hover:bg-violet-50">Go to your dashboard {{ icon("arrow", "h-4 w-4") }}</a>
+      {% else %}
+        <a href="/signup" class="btn bg-white px-5 py-3 text-base text-violet-700 hover:bg-violet-50">Create a free account {{ icon("arrow", "h-4 w-4") }}</a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

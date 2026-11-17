@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block title %}Dashboard - {{ app_name }}{% endblock %}
+{% block content %}
+<div class="mx-auto max-w-7xl px-4 py-8">
+  <div class="flex flex-wrap items-end justify-between gap-4">
+    <div>
+      <p class="text-sm text-zinc-500 dark:text-zinc-400">Welcome back</p>
+      <h1 class="text-3xl font-bold tracking-tight">Hi, {{ user.first_name }}!</h1>
+    </div>
+    <p class="text-sm text-zinc-500 dark:text-zinc-400">{{ total_all }} of {{ cap }} podcasts used</p>
+  </div>
+
+  <div class="mt-8 grid gap-6 md:grid-cols-2">
+    <a href="/podcasts/new?mode=host" class="card group flex gap-5 p-6 transition hover:-translate-y-0.5 hover:border-violet-400 hover:shadow-lg dark:hover:border-violet-500">
+      <span class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-violet-100 text-violet-700 dark:bg-violet-500/15 dark:text-violet-300" aria-hidden="true">{{ icon("list", "h-7 w-7") }}</span>
+      <span>
+        <span class="block text-lg font-semibold group-hover:text-violet-700 dark:group-hover:text-violet-300">Create questions for a podcast</span>
+        <span class="mt-1 block text-sm text-zinc-600 dark:text-zinc-300">You're the host. Mira drafts, checks and times your interview questions, and changes them the way you want.</span>
+      </span>
+    </a>
+    <a href="/podcasts/new?mode=guest" class="card group flex gap-5 p-6 transition hover:-translate-y-0.5 hover:border-pink-400 hover:shadow-lg dark:hover:border-pink-500">
+      <span class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-pink-100 text-pink-700 dark:bg-pink-500/15 dark:text-pink-300" aria-hidden="true">{{ icon("mic", "h-7 w-7") }}</span>
+      <span>
+        <span class="block text-lg font-semibold group-hover:text-pink-700 dark:group-hover:text-pink-300">Prepare for a podcast</span>
+        <span class="mt-1 block text-sm text-zinc-600 dark:text-zinc-300">You're the guest. Mira asks you likely questions, checks your answers and suggests stronger ones.</span>
+      </span>
+    </a>
+  </div>
+
+  <div class="mt-12 flex flex-wrap items-center justify-between gap-3">
+    <h2 class="text-xl font-semibold">Your podcasts</h2>
+    <form method="get" action="/dashboard" class="flex flex-wrap gap-2" role="search">
+      <input type="search" name="q" value="{{ q }}" maxlength="100" class="input w-56" placeholder="Search title or theme" aria-label="Search podcasts">
+      <select name="mode" class="input w-auto" aria-label="Filter by type">
+        <option value="" {{ 'selected' if not mode }}>All</option>
+        <option value="host" {{ 'selected' if mode == 'host' }}>Question plans</option>
+        <option value="guest" {{ 'selected' if mode == 'guest' }}>Guest prep</option>
+      </select>
+      <button class="btn btn-secondary">Filter</button>
+    </form>
+  </div>
+
+  {% if items %}
+    <ul class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {% for item in items %}
+        {% set p = item.podcast %}
+        <li>
+          <a href="/podcasts/{{ p.id }}" class="card flex h-full flex-col p-5 transition hover:border-violet-400 hover:shadow-md dark:hover:border-violet-500">
+            <div class="flex items-start justify-between gap-2">
+              <span class="badge {{ 'bg-violet-100 text-violet-800 dark:bg-violet-500/15 dark:text-violet-200' if p.mode == 'host' else 'bg-pink-100 text-pink-800 dark:bg-pink-500/15 dark:text-pink-200' }}">{{ 'Question plan' if p.mode == 'host' else 'Guest prep' }}</span>
+              <span class="text-xs text-zinc-500 dark:text-zinc-400">{{ p.updated_at.strftime('%d %b %Y') }}</span>
+            </div>
+            <h3 class="mt-3 line-clamp-2 font-semibold">{{ p.title }}</h3>
+            <p class="mt-1 line-clamp-2 text-sm text-zinc-600 dark:text-zinc-300">{{ p.theme }}</p>
+            <div class="mt-auto flex flex-wrap gap-x-4 gap-y-1 pt-4 text-xs text-zinc-500 dark:text-zinc-400">
+              <span>{{ item.questions }} question{{ '' if item.questions == 1 else 's' }}</span>
+              {% if p.mode == 'guest' %}<span>{{ item.answered }} practised</span>{% endif %}
+              <span class="{{ 'font-semibold text-rose-600 dark:text-rose-400' if item.over }}">{{ item.planned }} / {{ item.target }}</span>
+            </div>
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+    {% if pages > 1 %}
+      <nav class="mt-8 flex items-center justify-center gap-2" aria-label="Pagination">
+        {% if page_no > 1 %}<a class="btn btn-secondary btn-sm" href="?q={{ q|urlencode }}&amp;mode={{ mode }}&amp;page={{ page_no - 1 }}">Previous</a>{% endif %}
+        <span class="text-sm text-zinc-500">Page {{ page_no }} of {{ pages }}</span>
+        {% if page_no < pages %}<a class="btn btn-secondary btn-sm" href="?q={{ q|urlencode }}&amp;mode={{ mode }}&amp;page={{ page_no + 1 }}">Next</a>{% endif %}
+      </nav>
+    {% endif %}
+  {% else %}
+    <div class="card mt-6 p-10 text-center">
+      <p class="text-lg font-medium">{{ 'No podcasts match your search.' if q or mode else 'No podcasts yet.' }}</p>
+      <p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400">Pick one of the two options above to start.</p>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

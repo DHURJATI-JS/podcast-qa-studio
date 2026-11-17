@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% from "_macros.html" import csrf with context %}
+{% block title %}Choose a new password - {{ app_name }}{% endblock %}
+{% block content %}
+<div class="mx-auto max-w-md px-4 py-12 sm:py-20">
+  <div class="card p-8">
+    <div class="text-center">
+      <img src="/static/img/favicon.svg" alt="" class="mx-auto h-10 w-10">
+      <h1 class="mt-4 text-2xl font-semibold">Choose a new password</h1>
+    </div>
+    {% if invalid %}
+      <div class="alert alert-error mt-6" role="alert">This reset link is invalid, expired or has already been used.</div>
+      <a href="/forgot-password" class="btn btn-primary mt-6 w-full">Request a new link</a>
+    {% else %}
+      {% if error %}<div class="alert alert-error mt-6" role="alert">{{ error }}</div>{% endif %}
+      <form method="post" action="/reset-password" class="mt-6 space-y-4" data-once novalidate>
+        {{ csrf() }}
+        <input type="hidden" name="token" value="{{ token }}">
+        <div>
+          <label for="password" class="label">New password</label>
+          <input id="password" name="password" type="password" class="input py-3" minlength="10" maxlength="128" required autocomplete="new-password" autofocus data-strength-input>
+          <div class="mt-2 h-1.5 overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-800"><div class="h-full w-0 rounded-full bg-zinc-400 transition-all" data-strength-bar></div></div>
+          <p class="hint" data-strength-label>At least 10 characters.</p>
+        </div>
+        <div>
+          <label for="confirm_password" class="label">Confirm new password</label>
+          <input id="confirm_password" name="confirm_password" type="password" class="input py-3" minlength="10" maxlength="128" required autocomplete="new-password">
+        </div>
+        <button class="btn btn-primary w-full py-3">Save new password</button>
+        <p class="hint text-center">All your devices will be signed out.</p>
+      </form>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

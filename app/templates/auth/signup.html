@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% from "_macros.html" import csrf, honeypot, field_error with context %}
+{% block title %}Create account - {{ app_name }}{% endblock %}
+{% block content %}
+<div class="mx-auto max-w-lg px-4 py-12 sm:py-16">
+  <div class="card p-8">
+    <div class="text-center">
+      <img src="/static/img/favicon.svg" alt="" class="mx-auto h-10 w-10">
+      <h1 class="mt-4 text-2xl font-semibold">Create your account</h1>
+      <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">to continue to {{ app_name }}</p>
+    </div>
+    {% if errors.get('_') %}<div class="alert alert-error mt-6" role="alert">{{ errors.get('_') }}</div>{% endif %}
+    <form method="post" action="/signup" class="relative mt-6 space-y-4" data-once data-signup novalidate>
+      {{ csrf() }}
+      {{ honeypot() }}
+      <div>
+        <label for="display_name" class="label">Your name</label>
+        <input id="display_name" name="display_name" class="input" maxlength="60" autocomplete="name" value="{{ values.get('display_name', '') }}" placeholder="Priya Sharma">
+        {{ field_error(errors, 'display_name') }}
+      </div>
+      <div>
+        <label for="username" class="label">Username</label>
+        <input id="username" name="username" class="input" maxlength="30" required autocomplete="username" autocapitalize="none" spellcheck="false"
+               pattern="[a-z0-9][a-z0-9._]{1,28}[a-z0-9]" value="{{ values.get('username', '') }}" placeholder="priya.sharma">
+        <p class="hint">3-30 characters: lowercase letters, numbers, dots or underscores.</p>
+        {{ field_error(errors, 'username') }}
+      </div>
+      <div>
+        <label for="email" class="label">Email</label>
+        <input id="email" name="email" type="email" class="input" maxlength="254" required autocomplete="email" value="{{ values.get('email', '') }}" placeholder="you@example.com">
+        <p class="hint">Used to sign in and to reset your password.</p>
+        {{ field_error(errors, 'email') }}
+      </div>
+      <div class="grid gap-4 sm:grid-cols-2">
+        <div>
+          <label for="password" class="label">Password</label>
+          <input id="password" name="password" type="password" class="input" minlength="10" maxlength="128" required autocomplete="new-password" data-strength-input>
+          {{ field_error(errors, 'password') }}
+        </div>
+        <div>
+          <label for="confirm_password" class="label">Confirm</label>
+          <input id="confirm_password" name="confirm_password" type="password" class="input" minlength="10" maxlength="128" required autocomplete="new-password">
+          {{ field_error(errors, 'confirm_password') }}
+        </div>
+      </div>
+      <div>
+        <div class="h-1.5 overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-800"><div class="h-full w-0 rounded-full bg-zinc-400 transition-all" data-strength-bar></div></div>
+        <p class="hint" data-strength-label>At least 10 characters. Longer passphrases are best.</p>
+      </div>
+      <p class="text-xs text-zinc-500 dark:text-zinc-400">By creating an account you accept the <a class="link" href="/legal">disclaimer and terms</a>: the app is provided as is, AI output can be wrong, and no liability is accepted.</p>
+      <button class="btn btn-primary w-full py-3">Create account</button>
+    </form>
+  </div>
+  <p class="mt-6 text-center text-sm">Already have an account? <a href="/login" class="link">Sign in</a></p>
+</div>
+{% endblock %}

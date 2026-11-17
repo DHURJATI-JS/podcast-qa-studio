@@ -1,0 +1,19 @@
+{
+  "name": "podcast-qa-studio-frontend",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Build step for Podcast Q&A Studio: Tailwind CSS + esbuild, both minified.",
+  "scripts": {
+    "build:css": "tailwindcss -i ./src/app.css -o ../app/static/dist/app.min.css --minify",
+    "build:js": "NODE_PATH=./node_modules esbuild ../app/static/js/main.js --bundle --minify --format=iife --target=es2020 --legal-comments=none --outfile=../app/static/dist/app.min.js",
+    "build": "npm run build:css && npm run build:js"
+  },
+  "dependencies": {
+    "socket.io-client": "4.8.4"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "4.3.5",
+    "esbuild": "0.28.2",
+    "tailwindcss": "4.3.5"
+  }
+}

@@ -1,0 +1,18 @@
+{% macro field_error(errors, name) -%}
+  {%- if errors and errors.get(name) -%}<p class="field-error" id="{{ name }}-error">{{ errors.get(name) }}</p>{%- endif -%}
+{%- endmacro %}
+
+{% macro csrf() -%}
+  <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+{%- endmacro %}
+
+{% macro honeypot() -%}
+  <div class="honeypot" aria-hidden="true">
+    <label>Leave this empty <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+  </div>
+  <input type="hidden" name="form_ts" value="{{ form_token }}">
+{%- endmacro %}
+
+{% macro check(text) -%}
+  <li class="flex gap-3"><span class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-violet-100 text-xs text-violet-700 dark:bg-violet-500/20 dark:text-violet-200" aria-hidden="true">&#10003;</span><span>{{ text }}</span></li>
+{%- endmacro %}

@@ -1,0 +1,24 @@
+# secrets
+.env
+.env.local
+
+# python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+.venv-*/
+
+# node
+frontend/node_modules/
+
+# misc
+logs/
+*.log
+.DS_Store
+.idea/
+.vscode/
+
+# load-test output (reports can contain server details)
+loadtest/results/

@@ -1,0 +1,102 @@
+# Podcast Q&A Studio - full local stack.
+# Start everything with the one-click installer (Start-Mac.command / Start-Windows.bat)
+# or: docker compose up -d --build
+name: podcastqa
+
+x-app-env: &app-env
+  DATABASE_URL: postgresql+asyncpg://podcastqa:${POSTGRES_PASSWORD:?Run the installer first - it creates .env}@db:5432/podcastqa
+  REDIS_URL: redis://redis:6379/0
+  OLLAMA_URL: http://ollama:11434
+  KOKORO_URL: http://kokoro:8880
+
+services:
+  db:
+    image: pgvector/pgvector:0.8.1-pg17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: podcastqa
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Run the installer first - it creates .env}
+      POSTGRES_DB: podcastqa
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U podcastqa -d podcastqa"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  redis:
+    image: redis:7.4.6-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory", "512mb", "--maxmemory-policy", "volatile-lru"]
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+
+  app:
+    build:
+      context: .
+      target: runtime
+    image: podcastqa-app:local
+    restart: unless-stopped
+    env_file: .env
+    environment: *app-env
+    ports:
+      - "${APP_PORT:-8080}:8000"
+    stop_grace_period: 30s
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  worker:
+    image: podcastqa-app:local
+    pull_policy: never
+    restart: unless-stopped
+    command: ["python", "-m", "app.worker"]
+    stop_grace_period: 45s
+    env_file: .env
+    environment: *app-env
+    healthcheck:
+      disable: true
+    depends_on:
+      app:
+        condition: service_healthy
+
+  # Local Gemma (fallback AI) + EmbeddingGemma (pgvector embeddings), CPU inside Docker.
+  ollama:
+    image: ollama/ollama:0.40.15
+    restart: unless-stopped
+    environment:
+      OLLAMA_KEEP_ALIVE: 30m
+    volumes:
+      - ollama:/root/.ollama
+
+  # One-shot: downloads the models on first start (several GB; the app works meanwhile).
+  ollama-init:
+    image: ollama/ollama:0.40.15
+    restart: "no"
+    depends_on:
+      - ollama
+    environment:
+      OLLAMA_HOST: http://ollama:11434
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - >-
+        for i in $$(seq 1 90); do ollama list >/dev/null 2>&1 && break; sleep 2; done;
+        ollama pull ${LOCAL_EMBED_MODEL:-embeddinggemma} && ollama pull ${LOCAL_LLM_MODEL:-gemma3:4b}
+
+  # Kokoro text-to-speech (Mira's voice), CPU build.
+  kokoro:
+    image: ghcr.io/remsky/kokoro-fastapi-cpu:v0.9.2
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  redisdata:
+  ollama:

@@ -1,0 +1,6 @@
+# Test-only dependencies (installed in the Docker "test" stage).
+-r requirements.txt
+pytest==9.2.0
+pytest-asyncio==1.5.0
+pytest-timeout==2.4.0
+asgi-lifespan==2.1.0
